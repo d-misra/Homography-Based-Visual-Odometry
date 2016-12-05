@@ -123,8 +123,6 @@ protected:
         // to normalized coordinates
         return Ki*X;
     }
-
-
 };
 
 #endif // VISUALODOM_H

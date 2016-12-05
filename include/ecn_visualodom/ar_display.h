@@ -6,16 +6,25 @@
 #include <visp/vpIoTools.h>
 #include <visp/vpImageConvert.h>
 #include <visp/vpTime.h>
+#include <visp/vpDisplayX.h>
 #include <sstream>
 
 class ModelDisplay
 {
 public:
-    ModelDisplay() {init_ = false;}
+    ModelDisplay(bool use_ar = false) {init_ = false;use_ar_ = use_ar;}
 
     void init(const vpCameraParameters &_cam, vpImage<vpRGBa> &_I)
     {
         init_ = true;
+        cam_ = _cam;
+
+        if(!use_ar_)
+        {
+            display_.init(_I, -1, -1, "Pose display");
+            return;
+        }
+
         // find current ROS distro
         std::string ros_path = "/opt/ros/indigo/";
         if(!vpIoTools::checkDirectory(ros_path))
@@ -32,7 +41,7 @@ public:
                 {
                     std::stringstream ss;
                     ss << ros_path << "share/visp-" << i << "." << j << "." << k << "/data/ogre-simulator/resources.cfg";
-                   if(vpIoTools::checkFilename(ss.str()))
+                    if(vpIoTools::checkFilename(ss.str()))
                     {
                         ogre_path = ss.str();
                         ogre_path.resize(ogre_path.size()-13);
@@ -82,15 +91,26 @@ public:
 
     inline bool continueRendering()
     {
-        if(!init_) return true;
+        if(!init_ || !use_ar_) return true;
         return ogre_.continueRendering();
     }
 
     inline void display(const vpImage<vpRGBa> &_I, const vpHomogeneousMatrix &_cMw)
     {
         if(!init_) return;
-        ogre_.display(_I, _cMw);
-        vpTime::wait(15);
+
+        if(use_ar_)
+        {
+            ogre_.display(_I, _cMw);
+            vpTime::wait(15);
+        }
+        else
+        {
+            vpDisplay::displayFrame(_I, _cMw, cam_, .1);
+            vpDisplay::flush(_I);
+            vpDisplay::display(_I);
+        }
+
     }
 
 
@@ -102,8 +122,10 @@ public:
 
 protected:
     vpAROgre ogre_;
+    vpCameraParameters cam_;
     vpImage<vpRGBa> I_;
-    bool init_;
+    vpDisplayX display_;
+    bool init_, use_ar_;
 };
 
 
