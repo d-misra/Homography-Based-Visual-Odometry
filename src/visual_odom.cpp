@@ -74,7 +74,7 @@ bool VisualOdom::process(cv::Mat &im2, vpHomogeneousMatrix &_M)
 
         // keep only inliers
         int mask_count = 0;
-        for(unsigned i = 0; i < matched1.size(); i++)
+        for(unsigned i = 0; i < mask.cols; i++)
         {
             if(mask.at<uchar>(i))
             {

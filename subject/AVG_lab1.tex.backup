@@ -158,7 +158,7 @@ By combining the relative transform from homography and the initial guess from k
 \begin{enumerate}
  \item Get unscaled transform from initial homography, this gives us $(\t,\R)$ between the cameras and the normal $\n$ to the plane in the first camera frame.
  \item Get the rotation matrix corresponding to the Z-axis of the plane aligning with the $\n$ axis of the camera frame (\texttt{VisualOdom::getRotationFromNormal}). 
- \item Build the full transform $\cMo$ for the first image
+ \item Build the full transform $\cMo(0)$ for the first image (variable \texttt{cMo0})
   \item Compute the scale factor $d$ from $\n$ and the known translation ${}^c\t_o$ and initialize its value in the visual odometer (\texttt{VisualOdom::setDistance})
   \item Rescale the relative transform $\t \rightarrow d.\t$
 \end{enumerate}
@@ -201,22 +201,19 @@ This structure is a simple object that regroups values for $(\t,\R,\n)$. From an
 
 \subsection{The \texttt{VisualOdom} class}
 
-This class does most of the job (at least when you add the correct missing code). The existing methods are:
+This class does most of the job (at least when you add the correct missing code). It is initialized from the camera parameters and a flag telling if the homography
+should be computed relative to the initial image or relative to the previous image (inducing scale drift).\\
+The existing methods are:
 \begin{itemize}
- \item \texttt{bool process(cv::Mat &, vpHomogeneousMatrix &M) \\ 
+ \item \texttt{bool process(cv::Mat \&, vpHomogeneousMatrix \&M)} \\ 
  Main method, processes a new image and returns the corresponding transform. Returns True if everything went fine. 
  \item \texttt{void setDistance(double )}: sets the estimated plane parameter $d$
- \item \texttt{void getRotationFromNormal(vpRotationMatrix &)}: give the rotation matrix between the plane frame and the camera frame. Can only be used
+ \item \texttt{void getRotationFromNormal(vpRotationMatrix \&)}: give the rotation matrix between the plane frame and the camera frame. Can only be used
  if at least one homography was computed.
-  \item \texttt{void getNormal(vpColVector &}: get the plane parameter $\n$ computed from the last homography. Useful to compute the initial value $d$ at shown in \Sec{sec:init}.
+  \item \texttt{void getNormal(vpColVector \&}: get the plane parameter $\n$ computed from the last homography. Useful to compute the initial value $d$ at shown in \Sec{sec:init}.
 \end{itemize}
 
 Most of the variables are already defined, the attributes of the class can be read in \texttt{visual\_odom.h}. 
-
-
-
-
-
 
 
 

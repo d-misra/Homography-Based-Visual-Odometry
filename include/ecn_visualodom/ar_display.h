@@ -77,14 +77,16 @@ public:
         init(_cam, I_);
     }
 
-    ModelDisplay(const vpCameraParameters &_cam, vpImage<vpRGBa> &_I)
+    ModelDisplay(const vpCameraParameters &_cam, vpImage<vpRGBa> &_I, bool use_ar = false)
     {
+        use_ar_ = use_ar;
         init(_cam, _I);
     }
 
     // with opencv inputs
-    ModelDisplay(const vpCameraParameters &_cam, cv::Mat &_im)
+    ModelDisplay(const vpCameraParameters &_cam, cv::Mat &_im, bool use_ar = false)
     {
+        use_ar_ = use_ar;
         init(_cam, _im);
     }
 

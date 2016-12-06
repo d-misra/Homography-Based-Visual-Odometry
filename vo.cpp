@@ -73,12 +73,13 @@ int main(int argc, char ** argv)
             // update cMo
             // TO DO
 
-            // AR
-            ar.display(im, cMo);
-
-            // refresh display
-            cv::waitKey(100);
         }
+
+        // AR or frame display
+        ar.display(im, cMo);
+
+        // refresh display
+        cv::waitKey(100);
 
     }
 

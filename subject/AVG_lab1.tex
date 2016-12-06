@@ -55,6 +55,13 @@ This lab is available on GitHub. The package can be downloaded through git and c
 \end{lstlisting}
 \end{center} 
 
+The video should be downloaded from my website in the lab directory:
+\begin{center}\cppstyle
+\begin{lstlisting}
+ wget http://www.irccyn.ec-nantes.fr/~kermorga/files/armen.mp4
+\end{lstlisting}
+\end{center} 
+
 It may be useful to use an IDE like Qt Creator, to do so you have to launch it from the command line then:
 \begin{itemize}
  \item Load the \texttt{CMakeLists.txt} file as a new project
@@ -120,6 +127,7 @@ odometry before giving clues about the initial pose estimation.
 The core algorithm is to compute the relative odometry, that is the transform between the two camera frames. It corresponds to the method \texttt{VisualOdom::process}.
 The algorithm to follow is:
 \begin{enumerate}
+  \item Convert image to gray level
  \item Detect and compute keypoint descriptors in the new image
  \item Match keypoints with the ones from the previous image
  \item With RANSAC, compute homography and also get matches inliners 
@@ -213,7 +221,18 @@ The existing methods are:
   \item \texttt{void getNormal(vpColVector \&}: get the plane parameter $\n$ computed from the last homography. Useful to compute the initial value $d$ at shown in \Sec{sec:init}.
 \end{itemize}
 
-Most of the variables are already defined, the attributes of the class can be read in \texttt{visual\_odom.h}. 
+Most of the variables are already defined, the attributes of the class can be read in \texttt{visual\_odom.h}. In particular, 
+these useful variables are already available as class attributes:
+\begin{itemize}
+\item Stored image \texttt{im1}, image that can be used for gray-level conversion \texttt{img}
+ \item Keypoints (\texttt{kp1, kp2}) and their descriptors (\texttt{des1, des2})
+ \item Keypoint detector and descriptor: \texttt{akaze}
+ \item Matcher and matches (\texttt{matcher, matches})
+ \item Calibration matrices: \texttt{Kcv} for OpenCV functions, \texttt{K} and \texttt{Ki} (inverse) for ViSP matrix multiplication
+ \item Homography matrix (\texttt{Hp}, OpenCV format) and RANSAC mask for inliers (\texttt{mask})
+ \item Vector of homography structures \texttt{H} used to analyze the candidates and prune them if needed.
+\end{itemize}
+
 
 
 
