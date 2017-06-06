@@ -3,7 +3,7 @@ project(ecn_visualodom)
 
 add_compile_options(-std=c++11)
 
-set(CMAKE_BUILD_TYPE DEBUG)
+#set(CMAKE_BUILD_TYPE DEBUG)
 find_package(VISP REQUIRED)
 find_package(OpenCV 3 REQUIRED)
 

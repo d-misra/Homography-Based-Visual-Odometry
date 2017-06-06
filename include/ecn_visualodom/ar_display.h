@@ -54,11 +54,14 @@ public:
             if(ogre_path.size())
                 break;
         }
+        
+        ros_path += "lib/x86_64-linux-gnu/visp/data/ogre-simulator/";
+        
         std::cout << "Loading vpAROgre from:" << std::endl;
-        std::cout << " - ROS: " << ros_path + "lib/visp/data/ogre-simulator/" << std::endl;
+        std::cout << " - ROS: " << ros_path  << std::endl;
         std::cout << " - Meshes: " << ogre_path << std::endl;
 
-        ogre_ =    vpAROgre(_cam, _I.getWidth(), _I.getHeight(), ogre_path.c_str(), (ros_path + "lib/visp/data/ogre-simulator/").c_str());
+        ogre_ =    vpAROgre(_cam, _I.getWidth(), _I.getHeight(), ogre_path.c_str(), ros_path.c_str());
         ogre_.init(_I);
         ogre_.load("Robot", "robot.mesh");
         ogre_.setScale("Robot", 0.002f,0.002f,0.002f);
