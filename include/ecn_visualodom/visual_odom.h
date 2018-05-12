@@ -94,7 +94,7 @@ protected:
     // first time or not
     bool first_time;
     bool relative_to_initial;
-
+    //cv::InputOutputArray noArray();
     // matching stuff
     cv::Mat img,im1,imatches;
     cv::Ptr<cv::AKAZE> akaze;

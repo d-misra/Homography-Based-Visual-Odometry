@@ -17,14 +17,16 @@ int main(int argc, char ** argv)
     vpCameraParameters cam(684.169232, 680.105767, 365.163397, 292.358876);
 
     // visual odometer
-    bool relative_to_initial = true;
+    bool relative_to_initial = false;
     VisualOdom vo(cam, relative_to_initial);
 
     // we look for a more or less horizontal plane
     // vo.setNormalGuess(TO DO);
 
+    vo.setNormalGuess(0,-1,0);
+
     // AR
-    ModelDisplay ar(cam, im);
+    ModelDisplay ar(cam, im, true);
 
     // initial pose: translation known, rotation to be estimated later
     vpHomogeneousMatrix cMo0(-0.1,-0.1,0.7,0,0,0);
@@ -35,8 +37,11 @@ int main(int argc, char ** argv)
     // loop variables
     vpRotationMatrix R;
     vpColVector nor;
+    vpTranslationVector t;
     double d;
     bool compute_initial_pose = true;
+    int skip = 1;
+    int skipped = 0;
 
     while(ar.continueRendering())
     {
@@ -45,7 +50,7 @@ int main(int argc, char ** argv)
 
         // process and compute 2M1
         // returns True if succeded
-        if(vo.process(im,M))
+        if(vo.process(im,M) && skipped == 0)
         {
             if(compute_initial_pose)
             {
@@ -61,10 +66,14 @@ int main(int argc, char ** argv)
 
                 // compute and update distance estimate from normal
                 // d = TO DO;
+                t=cMo0.getTranslationVector();
+                d=nor[0]*t[0]+nor[1]*t[1]+nor[2]*t[2];
                 vo.setDistance(d);
+
 
                 // rescale this translation from d
                 // TO DO
+                M.insert(M.getTranslationVector()*d);
 
                 compute_initial_pose = false;
             }
@@ -72,8 +81,13 @@ int main(int argc, char ** argv)
 
             // update cMo
             // TO DO
+            if(relative_to_initial)
+                cMo=M*cMo0;
+            else
+                cMo=M*cMo;
 
         }
+        skipped = (skipped + 1) % skip;
 
         // AR or frame display
         ar.display(im, cMo);
@@ -82,15 +96,6 @@ int main(int argc, char ** argv)
         cv::waitKey(100);
 
     }
-
-
-
-
-
-
-
-
-
 
 
 
